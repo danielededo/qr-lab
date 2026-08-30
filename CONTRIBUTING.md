@@ -1,4 +1,4 @@
-# Contributing to <PROJECT_NAME>
+# Contributing to qr-lab
 
 Thanks for taking the time to contribute! This project is maintained by a solo developer (or a small team), so the process is intentionally lightweight. The goal of this document is to make contributions smooth, not to add bureaucracy.
 
@@ -18,7 +18,7 @@ Thanks for taking the time to contribute! This project is maintained by a solo d
    - `docs/short-description` for documentation
 3. **Make your changes.** Keep the scope of each PR small and focused — one logical change per PR is much easier to review than a grab-bag.
 4. **Follow the commit convention.** This project uses [Conventional Commits](https://www.conventionalcommits.org/); see [docs/COMMIT-CONVENTION.md](docs/COMMIT-CONVENTION.md) for the format and examples.
-5. **Test your changes.** Run the project's test suite and linters before opening the PR. [TO BE FILLED IN: project-specific commands, e.g. `make test`]
+5. **Test your changes.** Run the linter and the smoke tests before opening the PR — see the *Commands* section of [AGENTS.md](AGENTS.md) for the exact commands (`ruff check .` plus the generate/decode/verify round-trips).
 6. **Update documentation** if your change affects behavior, configuration, or public APIs. Add an entry to the `Unreleased` section of `CHANGELOG.md` when the change is user-visible.
 7. **Open a pull request** against `main` and fill in the PR template.
 
@@ -41,7 +41,3 @@ A good bug report includes:
 ## Questions?
 
 If something in this guide is unclear, open an issue — that's also a contribution.
-
-## Code of Conduct
-
-By participating in this project you agree to abide by the [Code of Conduct](CODE_OF_CONDUCT.md).

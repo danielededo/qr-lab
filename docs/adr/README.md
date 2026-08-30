@@ -45,5 +45,4 @@ makes onboarding trivial if the project ever gains collaborators.
 | --- | --- | --- |
 | [0000](0000-template.md) | Template | — |
 | [0001](0001-trunk-based-development.md) | Use trunk-based development for this repository | Accepted |
-
-[TO BE FILLED IN: add a row per ADR as they are created]
+| [0002](0002-qr-library-choices.md) | Use segno for QR generation and OpenCV for decoding | Accepted |

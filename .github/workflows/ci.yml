@@ -1,0 +1,59 @@
+# Lint plus end-to-end smoke tests. There is no unit-test framework on
+# purpose (see AGENTS.md): the scripts themselves are exercised the way a
+# reader would run them, and TOTP correctness is pinned by an RFC 6238
+# test vector.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Pinned so a new ruff release with different default rules can't turn
+      # this job red on its own; bump deliberately.
+      - run: pip install ruff==0.16.5
+      - run: ruff check .
+
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt
+
+      - name: wifi-qr round-trip (with characters that need escaping)
+        run: |
+          python wifi-qr/generate.py --ssid 'CI;Net:x' --password 'p@ss;wo:rd\,' \
+            --auth WPA --hidden --output /tmp/wifi.png
+          python wifi-qr/decode.py /tmp/wifi.png | tee /tmp/decoded.txt
+          grep -Fx 'SSID:     CI;Net:x' /tmp/decoded.txt
+          grep -Fx 'Password: p@ss;wo:rd\,' /tmp/decoded.txt
+          grep -Fx 'Hidden:   true' /tmp/decoded.txt
+
+      - name: totp-qr RFC 6238 test vectors
+        run: |
+          # The RFC 6238 test secret, derived instead of written literally so
+          # secret scanners don't flag the workflow on every edit.
+          SECRET=$(python -c "import base64; print(base64.b32encode(b'12345678901234567890').decode())")
+          test "$(python totp-qr/verify.py current $SECRET --at 59)" = 287082
+          test "$(python totp-qr/verify.py current $SECRET --at 1111111109)" = 081804
+          test "$(python totp-qr/verify.py current $SECRET --at 2000000000)" = 279037
+          python totp-qr/verify.py verify $SECRET 287082 --at 89   # ±1 step tolerance
+          ! python totp-qr/verify.py verify $SECRET 287082 --at 150  # stale code rejected
+
+      - name: totp-qr generate/verify round-trip
+        run: |
+          python totp-qr/generate.py --label ci@qr-lab --output /tmp/totp.png | tee /tmp/gen.txt
+          SECRET=$(awk '/^Secret:/ {print $2}' /tmp/gen.txt)
+          CODE=$(python totp-qr/verify.py current "$SECRET")
+          python totp-qr/verify.py verify "$SECRET" "$CODE"
