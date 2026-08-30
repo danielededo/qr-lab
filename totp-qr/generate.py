@@ -25,7 +25,7 @@ from urllib.parse import quote
 # directly from anywhere (each subproject stays standalone, no packaging).
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from common.qr_utils import save_qr  # noqa: E402
+from common.qr_utils import save_qr
 
 
 def generate_secret(num_bytes: int = 20) -> str:

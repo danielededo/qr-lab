@@ -27,7 +27,10 @@ def _run(cmd: list[str]) -> str:
     """Run a command and return stripped stdout, mapping every failure mode
     (missing binary, non-zero exit) to DetectionError."""
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
+        # check=False: we turn a non-zero exit into DetectionError ourselves.
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, timeout=15, check=False
+        )
     except FileNotFoundError:
         raise DetectionError(f"`{cmd[0]}` is not available on this system") from None
     except subprocess.TimeoutExpired:

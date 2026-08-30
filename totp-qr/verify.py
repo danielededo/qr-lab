@@ -33,7 +33,7 @@ def decode_secret(secret: str) -> bytes:
     normalized += "=" * (-len(normalized) % 8)
     try:
         return base64.b32decode(normalized)
-    except Exception:
+    except (ValueError, TypeError):  # binascii.Error is a ValueError subclass
         sys.exit(f"error: {secret!r} is not valid base32")
 
 

@@ -17,7 +17,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install ruff
+      # Pinned so a new ruff release with different default rules can't turn
+      # this job red on its own; bump deliberately.
+      - run: pip install ruff==0.16.5
       - run: ruff check .
 
   smoke-test:
