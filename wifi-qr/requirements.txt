@@ -1,0 +1,6 @@
+# QR generation — pure Python, no external dependencies of its own.
+segno>=1.6
+
+# QR decoding — the headless build is enough (we never open GUI windows;
+# webcam capture works without the GUI modules too).
+opencv-python-headless>=4.8
