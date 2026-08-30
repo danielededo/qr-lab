@@ -32,8 +32,8 @@ Even solo, a minimal ruleset on `main` prevents accidents:
       solo maintainer — the point is blocking direct pushes, not self-review
       theater).
 - [ ] Block force pushes and deletions.
-- [ ] Require status checks to pass, once the project has CI. [TO BE FILLED IN:
-      check names]
+- [ ] Require status checks to pass, once the project has CI. For this project:
+      the `lint` and `smoke-test` jobs of `.github/workflows/ci.yml`.
 - [ ] Optional: **require signed commits** — only if you have GPG/SSH signing
       configured everywhere you commit from (including remote/CI environments),
       otherwise it will block your own workflow.

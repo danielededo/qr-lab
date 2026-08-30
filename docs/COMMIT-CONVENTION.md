@@ -106,4 +106,5 @@ Solo projects don't need enforcement, but if you want it:
 [commitlint](https://commitlint.js.org) with `config-conventional` validates
 messages, and [release-please](https://github.com/googleapis/release-please) or
 semantic-release can turn this convention into automated versioning and
-changelogs. [TO BE FILLED IN: per-project tooling choice]
+changelogs. This project uses no enforcement tooling — the convention is
+followed by hand and checked in review.

@@ -12,7 +12,7 @@ Instead, use one of these private channels:
 
 1. **GitHub private vulnerability reporting** (preferred, if enabled for this
    repository): go to the **Security** tab and click **Report a vulnerability**.
-2. **Email**: send a report to `<SECURITY_CONTACT_EMAIL>` with a subject line
+2. **Email**: send a report to `danielededo@icloud.com` with a subject line
    starting with `[SECURITY]`.
 
 A useful report includes:
@@ -43,8 +43,6 @@ branch) receive security fixes.
 | ------- | --------- |
 | latest  | yes       |
 | older   | no        |
-
-[TO BE FILLED IN: adjust this table if the project maintains multiple release lines]
 
 ## Scope notes
 

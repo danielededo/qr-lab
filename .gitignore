@@ -50,3 +50,16 @@ tmp/
 .tmp/
 *.bak
 *.orig
+
+### Python (this project's stack)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ruff_cache/
+
+### Generated QR images (examples live in docs, outputs stay local)
+/wifi-qr/*.png
+/wifi-qr/*.svg
+/totp-qr/*.png
+/totp-qr/*.svg

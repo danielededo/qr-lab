@@ -20,42 +20,12 @@ updates:
         patterns:
           - "*"
 
-  # --- Examples: uncomment and adapt for the project's ecosystem ---
-  #
-  # - package-ecosystem: "npm"            # JavaScript / TypeScript
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  #   commit-message:
-  #     prefix: "chore"
-  #   groups:
-  #     minor-and-patch:
-  #       update-types: ["minor", "patch"]
-  #
-  # - package-ecosystem: "pip"            # Python
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  #   commit-message:
-  #     prefix: "chore"
-  #
-  # - package-ecosystem: "gomod"          # Go
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  #   commit-message:
-  #     prefix: "chore"
-  #
-  # - package-ecosystem: "cargo"          # Rust
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  #   commit-message:
-  #     prefix: "chore"
-  #
-  # - package-ecosystem: "docker"
-  #   directory: "/"
-  #   schedule:
-  #     interval: "weekly"
-  #   commit-message:
-  #     prefix: "chore"
+  # Each subproject manages its own requirements.txt.
+  - package-ecosystem: "pip"
+    directories:
+      - "/wifi-qr"
+      - "/totp-qr"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore"
