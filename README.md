@@ -1,86 +1,67 @@
-# scaffold
+# qr-lab
 
-A meta/template repository with a sensible baseline for personal projects — licensing, governance, documentation, and contribution workflow. It is deliberately **not** language-specific: it contains the parts that every project needs regardless of stack.
+A learning-focused monorepo for exploring QR code technology — encoding,
+decoding, and error correction — through two small, concrete, verifiable use
+cases. It is meant to be read and understood, not just executed: small scripts,
+no frameworks, and the interesting algorithms (payload escaping, RFC 6238
+TOTP) implemented by hand instead of imported.
 
-## What this repo is
+[![CI](https://github.com/danielededo/qr-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/danielededo/qr-lab/actions)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-This repository is a starting point for new personal projects, both public and private. It collects the boilerplate that is easy to get wrong or to postpone forever:
+## Subprojects
 
-- License texts and a guide for choosing between them
-- Community and governance files (`CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`)
-- A changelog skeleton following [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/)
-- Documentation on branching strategies, commit conventions, and Architecture Decision Records (ADRs)
-- GitHub-specific configuration (issue and PR templates, `CODEOWNERS`, Dependabot)
-- Cross-language editor, line-ending, and ignore rules (`.editorconfig`, `.gitattributes`, `.gitignore`)
-- A checklist for the GitHub settings that files can't carry ([docs/REPO-SETTINGS.md](docs/REPO-SETTINGS.md))
+| Subproject | What it demonstrates |
+| --- | --- |
+| [wifi-qr](wifi-qr/) | Generate and decode WiFi credential QR codes (`WIFI:` payload format, character escaping, OS-specific credential auto-detection) |
+| [totp-qr](totp-qr/) | Generate TOTP/2FA enrollment QR codes (`otpauth://` URIs) and verify codes with a from-scratch RFC 6238 implementation |
 
-[TO BE FILLED IN: anything else this template grows to include]
+Shared QR generation helpers live in [common/](common/); each subproject is
+otherwise standalone, with its own `requirements.txt` and `README.md`.
 
-## How to use it as a template
+## Quick start
 
-1. Click **Use this template** on GitHub (or clone and re-init: `git clone`, delete `.git`, `git init`).
-2. Search for the placeholders and replace them:
-   - `<PROJECT_NAME>` — the name of your new project
-   - `<OWNER_HANDLE>` — your GitHub username
-   - `<SECURITY_CONTACT_EMAIL>` — the address for vulnerability reports
-   - `<CONTACT_EMAIL>` — the code of conduct enforcement contact
-   - `<YEAR>` / `<COPYRIGHT_HOLDER>` — in the chosen license file
-   - `[TO BE FILLED IN]` — free-form sections that need project-specific content
-3. Pick a license: read [docs/LICENSE-GUIDE.md](docs/LICENSE-GUIDE.md), copy the right file from [licenses/](licenses/) to the repository root as `LICENSE`, and delete the `licenses/` directory.
-4. Rewrite this `README.md` for the actual project, starting from
-   [docs/README-TEMPLATE.md](docs/README-TEMPLATE.md).
-5. Configure the repository settings following [docs/REPO-SETTINGS.md](docs/REPO-SETTINGS.md).
-6. Delete what you don't need (see the notes below on optional files).
-7. Reset `CHANGELOG.md` to a fresh `Unreleased` section.
+```sh
+git clone https://github.com/danielededo/qr-lab.git
+cd qr-lab/wifi-qr            # or qr-lab/totp-qr
+pip install -r requirements.txt
+python generate.py --ssid "My Network" --password "hunter2"   # wifi-qr
+python decode.py wifi-qr.png
+```
 
-### Optional files
-
-- **`CODE_OF_CONDUCT.md`** — included because it is useful the moment a public project receives external contributors, but it is optional: feel free to remove it for private or strictly personal repositories.
-- **`.github/CODEOWNERS`** — optional for single-maintainer projects; see the comments inside the file.
-- **`docs/adr/`** — keep it only if you intend to record architecture decisions.
-
-## What it does NOT include (and why)
-
-- **Language-specific tooling** (linters, formatters, build files, package manifests): every stack has its own conventions and generators; duplicating them here would only go stale.
-- **CI/CD workflows**: pipelines depend heavily on the language, hosting, and deployment target. Add them per project.
-- **A `LICENSE` file at the root**: choosing a license is a per-project decision. The `licenses/` directory provides the candidates and `docs/LICENSE-GUIDE.md` explains how to choose.
-- **Issue tracker automation, bots, org policies**: this template targets personal projects maintained by one person or a small team, not an organization.
+Requirements: Python 3.11+. Each subproject's README documents its commands,
+expected output, and the underlying format or algorithm.
 
 ## Structure
 
 ```
-/
-├── README.md                       # this file — replace with the project's own README
-├── AGENTS.md                       # AI agent instructions (single source of truth)
-├── CLAUDE.md                       # pointer to AGENTS.md
-├── CONTRIBUTING.md                 # contribution workflow
-├── CODE_OF_CONDUCT.md              # Contributor Covenant (optional for private repos)
-├── SECURITY.md                     # how to report vulnerabilities
-├── CHANGELOG.md                    # Keep a Changelog + SemVer skeleton
-├── .editorconfig                   # cross-language editor rules
-├── .gitattributes                  # line-ending normalization and binary handling
-├── .gitignore                      # OS, IDE, and secrets ignores (not language-specific)
-├── licenses/                       # license candidates — pick one, move to ./LICENSE
-│   ├── MIT.txt
-│   ├── APACHE-2.0.txt
-│   └── PROPRIETARY.txt
-├── docs/
-│   ├── LICENSE-GUIDE.md            # how to choose a license
-│   ├── README-TEMPLATE.md          # README skeleton for new projects
-│   ├── REPO-SETTINGS.md            # GitHub settings checklist per repository
-│   ├── BRANCHING-STRATEGY.md       # trunk-based/GitHub Flow vs release-based
-│   ├── COMMIT-CONVENTION.md        # Conventional Commits, with examples
-│   ├── AI-AGENTS.md                # guidelines for CLAUDE.md / AGENTS.md and agent setup
-│   └── adr/
-│       ├── README.md               # what ADRs are and how to use them
-│       ├── 0000-template.md        # ADR template
-│       └── 0001-trunk-based-development.md  # this repo's own branching decision
-└── .github/
-    ├── CODEOWNERS                  # optional for single-maintainer projects
-    ├── PULL_REQUEST_TEMPLATE.md
-    ├── ISSUE_TEMPLATE/
-    │   ├── bug_report.md
-    │   ├── feature_request.md
-    │   └── config.yml
-    └── dependabot.yml              # base config, adapt per ecosystem
+qr-lab/
+├── wifi-qr/            # WiFi credential QR codes: generate, decode, --auto detection
+├── totp-qr/            # TOTP setup QR codes + RFC 6238 verifier (stdlib-only)
+├── common/
+│   └── qr_utils.py     # shared payload-to-image helper (segno)
+├── docs/               # conventions and ADRs inherited from the scaffold template
+└── .github/            # CI (lint + smoke tests), issue/PR templates, Dependabot
 ```
+
+## Development
+
+```sh
+pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt ruff
+ruff check .
+```
+
+There is no unit-test framework by design: CI smoke-tests the scripts
+end-to-end and pins TOTP correctness to the RFC 6238 test vectors — see
+[.github/workflows/ci.yml](.github/workflows/ci.yml). See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the contribution workflow and
+[docs/COMMIT-CONVENTION.md](docs/COMMIT-CONVENTION.md) for commit messages.
+
+## Status
+
+A hands-on learning repo, not a product: CLI only, no persistence, no
+production security hardening. Don't use it as your actual 2FA system.
+
+## License
+
+Distributed under the MIT License — see [LICENSE](LICENSE).
