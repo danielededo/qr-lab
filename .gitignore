@@ -63,3 +63,5 @@ venv/
 /wifi-qr/*.svg
 /totp-qr/*.png
 /totp-qr/*.svg
+/qr-damage/*.png
+/qr-damage/*.svg

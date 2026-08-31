@@ -1,0 +1,7 @@
+# QR generation — pure Python, no external dependencies of its own.
+segno>=1.6
+
+# Decoding the damaged images; numpy comes with it and is used directly
+# for the pixel manipulation.
+opencv-python-headless>=4.8
+numpy>=1.24
