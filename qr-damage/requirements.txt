@@ -6,4 +6,4 @@ segno>=1.6.6
 opencv-python-headless>=5.0.0.93
 # numpy 2.5+ requires Python >=3.12; this project supports 3.11, so the floor
 # stays on the 2.4 series (see the matching ignore rule in dependabot.yml).
-numpy>=2.4
+numpy>=2.4.6
