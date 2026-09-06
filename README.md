@@ -48,7 +48,11 @@ qr-lab/
 
 ## Development
 
+A virtual environment at the repo root is recommended (one is enough for all
+subprojects — their dependencies overlap; `.venv/` is already git-ignored):
+
 ```sh
+python -m venv .venv && source .venv/bin/activate   # .venv\Scripts\activate on Windows
 pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt -r qr-damage/requirements.txt ruff
 ruff check .
 ```
