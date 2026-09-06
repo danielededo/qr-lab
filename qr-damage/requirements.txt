@@ -3,5 +3,5 @@ segno>=1.6
 
 # Decoding the damaged images; numpy comes with it and is used directly
 # for the pixel manipulation.
-opencv-python-headless>=4.8
+opencv-python-headless>=5.0.0.93
 numpy>=1.24
