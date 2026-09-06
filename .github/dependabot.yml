@@ -30,3 +30,8 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "chore"
+    ignore:
+      # numpy 2.5+ requires Python >=3.12; this project supports 3.11.
+      # Drop this rule when the Python floor moves to 3.12.
+      - dependency-name: "numpy"
+        versions: [">=2.5"]
