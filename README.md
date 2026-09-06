@@ -49,13 +49,23 @@ qr-lab/
 ## Development
 
 A virtual environment at the repo root is recommended (one is enough for all
-subprojects — their dependencies overlap; `.venv/` is already git-ignored):
+subprojects — their dependencies overlap; `.venv/` is already git-ignored).
+This is also [Debian/Ubuntu's official way](https://www.debian.org/releases/bookworm/release-notes/ch-information.en.html#python3-pep-668)
+to install non-distro Python packages — on those systems (WSL included) a bare
+`pip install` fails with `externally-managed-environment` by design (PEP 668),
+and `python3 -m venv` needs the `python3-venv` (or `python3-full`) apt package:
 
 ```sh
-python -m venv .venv && source .venv/bin/activate   # .venv\Scripts\activate on Windows
-pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt -r qr-damage/requirements.txt ruff
+python3 -m venv .venv && source .venv/bin/activate   # .venv\Scripts\activate on Windows
+python -m pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt -r qr-damage/requirements.txt ruff
 ruff check .
 ```
+
+Troubleshooting: `externally-managed-environment` *inside* an activated venv
+means the venv was created while `python3-venv` was missing, so it has no pip
+of its own — install that package, then run `python -m ensurepip --upgrade` in
+the venv (or recreate it). `python -m pip ...` always targets the interpreter
+you're running, which sidesteps any "which pip am I using?" ambiguity.
 
 There is no unit-test framework by design: CI smoke-tests the scripts
 end-to-end and pins TOTP correctness to the RFC 6238 test vectors — see
