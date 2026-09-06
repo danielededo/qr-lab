@@ -24,6 +24,9 @@ How to use this file:
   optional auto-detection of the currently connected network (`--auto`).
 - `totp-qr` subproject: generate TOTP/2FA setup QR codes and verify codes with
   a from-scratch RFC 6238 implementation.
+- `qr-damage` subproject: an error-correction lab that measures where each
+  Reed-Solomon level (L/M/Q/H) actually stops decoding, under scattered and
+  contiguous damage.
 
 <!--
 ## [0.1.0] - YYYY-MM-DD

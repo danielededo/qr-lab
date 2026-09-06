@@ -15,6 +15,7 @@ TOTP) implemented by hand instead of imported.
 | --- | --- |
 | [wifi-qr](wifi-qr/) | Generate and decode WiFi credential QR codes (`WIFI:` payload format, character escaping, OS-specific credential auto-detection) |
 | [totp-qr](totp-qr/) | Generate TOTP/2FA enrollment QR codes (`otpauth://` URIs) and verify codes with a from-scratch RFC 6238 implementation |
+| [qr-damage](qr-damage/) | Break QR codes on purpose: measure where each Reed-Solomon error-correction level (L/M/Q/H) actually stops decoding |
 
 Shared QR generation helpers live in [common/](common/); each subproject is
 otherwise standalone, with its own `requirements.txt` and `README.md`.
@@ -38,6 +39,7 @@ expected output, and the underlying format or algorithm.
 qr-lab/
 ├── wifi-qr/            # WiFi credential QR codes: generate, decode, --auto detection
 ├── totp-qr/            # TOTP setup QR codes + RFC 6238 verifier (stdlib-only)
+├── qr-damage/          # error-correction lab: damage QR codes until they fail
 ├── common/
 │   └── qr_utils.py     # shared payload-to-image helper (segno)
 ├── docs/               # conventions and ADRs inherited from the scaffold template
@@ -46,8 +48,12 @@ qr-lab/
 
 ## Development
 
+A virtual environment at the repo root is recommended (one is enough for all
+subprojects — their dependencies overlap; `.venv/` is already git-ignored):
+
 ```sh
-pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt ruff
+python -m venv .venv && source .venv/bin/activate   # .venv\Scripts\activate on Windows
+pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt -r qr-damage/requirements.txt ruff
 ruff check .
 ```
 

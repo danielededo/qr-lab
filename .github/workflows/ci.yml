@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
-      - run: pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt
+      - run: pip install -r wifi-qr/requirements.txt -r totp-qr/requirements.txt -r qr-damage/requirements.txt
 
       - name: wifi-qr round-trip (with characters that need escaping)
         run: |
@@ -57,3 +57,14 @@ jobs:
           SECRET=$(awk '/^Secret:/ {print $2}' /tmp/gen.txt)
           CODE=$(python totp-qr/verify.py current "$SECRET")
           python totp-qr/verify.py verify "$SECRET" "$CODE"
+
+      - name: qr-damage experiments (fast parameters)
+        run: |
+          python qr-damage/capacity.py --outdir /tmp
+          test -f /tmp/capacity-H.png
+          python qr-damage/damage.py --levels LH --trials 2 --step 0.02 | tee /tmp/damage.txt
+          # H must survive a strictly larger blot than L: that ordering IS the lesson.
+          L_SIDE=$(grep -oP '^  L .*survives up to \K[0-9]+' /tmp/damage.txt)
+          H_SIDE=$(grep -oP '^  H .*survives up to \K[0-9]+' /tmp/damage.txt)
+          echo "blot survival: L=${L_SIDE} H=${H_SIDE} (modules per side)"
+          test "$H_SIDE" -gt "$L_SIDE"

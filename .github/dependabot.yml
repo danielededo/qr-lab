@@ -25,6 +25,7 @@ updates:
     directories:
       - "/wifi-qr"
       - "/totp-qr"
+      - "/qr-damage"
     schedule:
       interval: "weekly"
     commit-message:
