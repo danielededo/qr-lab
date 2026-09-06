@@ -89,5 +89,9 @@ imposes its own access rules — behavior is deliberately not identical:
   not (and should not) try to suppress it.
 - **Windows**: `netsh wlan show profile name="<ssid>" key=clear` generally
   works without admin rights for profiles created by the current user.
+- **WSL**: reports itself as Linux, but the WiFi adapter (and its stored
+  credentials) belong to Windows — the script detects WSL and calls
+  `netsh.exe` through the interop bridge instead of NetworkManager. Requires
+  Windows interop enabled (it is by default).
 
 On any failure the script falls back to manual input rather than crashing.

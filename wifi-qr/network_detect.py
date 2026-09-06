@@ -9,6 +9,8 @@ formats:
 - macOS:   networksetup + the `security` Keychain CLI — triggers a Keychain
            access prompt unless pre-authorized
 - Windows: netsh — usually works without admin rights
+- WSL:     looks like Linux but the WiFi adapter belongs to Windows, so the
+           Windows path is used via the interop bridge (`netsh.exe`)
 
 Every failure path raises DetectionError with a human-readable reason, so the
 caller can fall back to manual input instead of crashing.
@@ -25,7 +27,7 @@ class DetectionError(Exception):
 
 def _run(cmd: list[str]) -> str:
     """Run a command and return stripped stdout, mapping every failure mode
-    (missing binary, non-zero exit) to DetectionError."""
+    (missing binary, non-executable binary, non-zero exit) to DetectionError."""
     try:
         # check=False: we turn a non-zero exit into DetectionError ourselves.
         result = subprocess.run(
@@ -35,6 +37,10 @@ def _run(cmd: list[str]) -> str:
         raise DetectionError(f"`{cmd[0]}` is not available on this system") from None
     except subprocess.TimeoutExpired:
         raise DetectionError(f"`{' '.join(cmd)}` timed out") from None
+    except OSError as exc:
+        # e.g. PermissionError when something non-executable on PATH shadows
+        # the tool — seen on WSL, where Windows directories are on PATH.
+        raise DetectionError(f"could not run `{cmd[0]}`: {exc}") from None
     if result.returncode != 0:
         detail = result.stderr.strip() or result.stdout.strip() or "no output"
         raise DetectionError(f"`{' '.join(cmd)}` failed: {detail}")
@@ -105,10 +111,20 @@ def detect_macos() -> tuple[str, str]:
     return ssid, password
 
 
-def detect_windows() -> tuple[str, str]:
+def _is_wsl() -> bool:
+    """Running inside Windows Subsystem for Linux? WSL kernels identify
+    themselves as Microsoft's (e.g. '...-microsoft-standard-WSL2')."""
+    return "microsoft" in platform.release().lower()
+
+
+def detect_windows(netsh: str = "netsh") -> tuple[str, str]:
     """Both SSID and password via netsh; `key=clear` generally works without
-    admin rights for profiles the current user created."""
-    output = _run(["netsh", "wlan", "show", "interfaces"])
+    admin rights for profiles the current user created.
+
+    Under WSL the same tool is reachable as `netsh.exe` through the Windows
+    interop bridge — `detect()` passes that name there, since the WiFi adapter
+    belongs to Windows, not to the Linux side."""
+    output = _run([netsh, "wlan", "show", "interfaces"])
     ssid = ""
     for line in output.splitlines():
         stripped = line.strip()
@@ -119,7 +135,7 @@ def detect_windows() -> tuple[str, str]:
     if not ssid:
         raise DetectionError("no active WiFi connection found (netsh)")
 
-    output = _run(["netsh", "wlan", "show", "profile", f"name={ssid}", "key=clear"])
+    output = _run([netsh, "wlan", "show", "profile", f"name={ssid}", "key=clear"])
     for line in output.splitlines():
         stripped = line.strip()
         if stripped.startswith("Key Content"):
@@ -135,6 +151,10 @@ def detect() -> tuple[str, str]:
     the OS is unsupported or detection fails."""
     system = platform.system()
     if system == "Linux":
+        if _is_wsl():
+            # WSL: the WiFi adapter (and its stored credentials) live on the
+            # Windows side, so ask Windows through the interop bridge.
+            return detect_windows(netsh="netsh.exe")
         return detect_linux()
     if system == "Darwin":
         return detect_macos()
