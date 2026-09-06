@@ -27,6 +27,12 @@ How to use this file:
 - `qr-damage` subproject: an error-correction lab that measures where each
   Reed-Solomon level (L/M/Q/H) actually stops decoding, under scattered and
   contiguous damage.
+- `wifi-qr --auto` now works on WSL by querying Windows via `netsh.exe`.
+
+### Fixed
+
+- `wifi-qr --auto` crashed with `PermissionError` instead of falling back to
+  manual input when a detection tool existed on PATH but was not executable.
 
 <!--
 ## [0.1.0] - YYYY-MM-DD
